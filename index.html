@@ -17,6 +17,7 @@
         :root {
             --primary: #D32F2F;         
             --primary-dark: #B71C1C;
+            --secondary: #263238;      
             --success: #2E7D32;         
             --warning: #F9A825;         
             --bg-body: #F3F2F1;
@@ -96,12 +97,21 @@
         .card.pass .status-icon { color: var(--success); }
         .card.fail .status-icon { color: var(--primary); }
 
-        /* FAB */
-        .fab-wrapper { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 40; }
+        /* --- FAB (ปุ่มลอย) --- */
+        .fab-wrapper { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 40; align-items: flex-end; }
+        
+        /* ปุ่มกลมทั่วไป */
         .fab { width: 56px; height: 56px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.25); cursor: pointer; font-size: 1.2rem; transition: transform 0.2s; }
         .fab:active { transform: scale(0.95); }
-        .fab-scan { background: var(--primary); width: 64px; height: 64px; font-size: 1.6rem; }
-        .fab-excel { background: var(--success); }
+        
+        /* ปุ่มสแกน (สีดำ ตามที่ขอ) */
+        .fab-scan { 
+            background: var(--text-main); /* สีดำ */
+            width: 64px; height: 64px; font-size: 1.6rem; 
+        }
+        
+        /* ปุ่ม Excel (สีเขียว) */
+        .fab-excel { background: var(--success); width: 48px; height: 48px; font-size: 1.1rem; }
 
         /* MODALS */
         .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(2px); }
@@ -120,7 +130,7 @@
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #CFD8DC; border-radius: 34px; transition: .3s; }
         .slider:before { content: ""; position: absolute; height: 20px; width: 20px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: .3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input:checked + .slider { background: var(--success); }
-        input:checked + .slider:before { transform: translateX(22px); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         .form-control { width: 100%; padding: 14px; border: 1px solid #CFD8DC; border-radius: 12px; margin-top: 15px; font-family: 'Prompt'; font-size: 1rem; color: var(--text-main); background: #FAFAFA; outline: none; -webkit-appearance: none; }
         .form-control:focus { border-color: var(--primary); background: #FFF; }
@@ -174,30 +184,25 @@
     </div>
     
     <div class="filter-chips">
-        <div class="chip active" id="filter-all" onclick="App.filter('all', this)">
-            <i class="fa-solid fa-layer-group"></i> ทั้งหมด
-        </div>
-        <div class="chip" id="filter-pending" onclick="App.filter('pending', this)">
-            <i class="fa-regular fa-clock"></i> รอตรวจ
-        </div>
-        <div class="chip" id="filter-fail" onclick="App.filter('fail', this)">
-            <i class="fa-solid fa-triangle-exclamation"></i> มีปัญหา
-        </div>
+        <div class="chip active" id="filter-all" onclick="App.filter('all', this)">ทั้งหมด</div>
+        <div class="chip" id="filter-pending" onclick="App.filter('pending', this)">รอตรวจ</div>
+        <div class="chip" id="filter-fail" onclick="App.filter('fail', this)">มีปัญหา</div>
     </div>
 
     <div id="list-container"></div>
 
     <div class="fab-wrapper">
         <div class="fab fab-excel" onclick="App.exportExcel()" title="ส่งออก Excel"><i class="fa-solid fa-file-excel"></i></div>
+        <!-- ปุ่มสแกนสีดำ -->
         <div class="fab fab-scan" onclick="App.openScanner()" title="สแกน QR"><i class="fa-solid fa-qrcode"></i></div>
     </div>
 
     <!-- INSPECT MODAL -->
     <div id="modalInspect" class="modal">
         <div class="sheet">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div class="sheet-header">
                 <div>
-                    <h2 style="margin:0; color:var(--text-main); font-size:1.4rem;">บันทึกผล</h2>
+                    <h2 style="margin:0; color:var(--primary); font-size:1.4rem;">บันทึกผล</h2>
                     <p id="inspectTitle" style="color:var(--text-muted); margin:4px 0 0 0; font-size:0.9rem;">FE-XX</p>
                     <p id="lastCheckInfo" style="font-size:0.75rem; color:var(--success); margin-top:4px; display:none;"><i class="fa-solid fa-clock-rotate-left"></i> ตรวจล่าสุด: <span id="lastCheckDate"></span></p>
                 </div>
@@ -222,6 +227,8 @@
             <button id="btnSave" class="btn-save" onclick="App.save()">
                 <i class="fa-solid fa-cloud-arrow-up"></i> บันทึกข้อมูล
             </button>
+            
+             <button onclick="App.deleteItem()" style="width:100%; margin-top:15px; color:var(--primary); background:none; border:none; cursor:pointer; font-size:0.9rem; text-decoration:underline;">ลบจุดตรวจนี้</button>
         </div>
     </div>
 
@@ -230,6 +237,12 @@
         <div class="sheet">
             <h2 style="margin-top:0; margin-bottom: 20px;">เมนูจัดการ</h2>
             
+            <button class="menu-btn" onclick="UI.openModal('modalAdd'); UI.closeModal('modalMenu')">
+                <i class="fa-solid fa-plus-circle" style="color:var(--success)"></i> เพิ่มจุดตรวจใหม่
+            </button>
+            
+            <div style="margin: 20px 0; border-top:1px solid #eee;"></div>
+
             <div style="margin-bottom: 20px;">
                 <label style="font-size:0.8rem; color:var(--text-muted);">เลือกเดือน</label>
                 <input type="month" id="monthPickerMenu" class="form-control" style="margin-top:5px;" onchange="App.changeMonthFromMenu()">
@@ -244,6 +257,20 @@
             <div style="text-align:center; margin-top:30px;">
                 <button onclick="UI.closeModal('modalMenu')" style="background:none; border:1px solid #ddd; padding:10px 30px; border-radius:24px; color:#666;">ปิดเมนู</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ADD MODAL -->
+    <div id="modalAdd" class="modal">
+        <div class="sheet">
+            <h2 style="margin-top:0;">เพิ่มจุดตรวจใหม่</h2>
+            <input type="text" id="addId" class="form-control" placeholder="รหัสถัง (เช่น FE-91)" style="text-transform:uppercase;">
+            <input type="text" id="addLoc" class="form-control" placeholder="สถานที่ติดตั้ง">
+            <input type="text" id="addType" class="form-control" placeholder="ชนิดถัง (เช่น เคมีแห้ง)">
+            <input type="text" id="addSize" class="form-control" placeholder="ขนาด (เช่น 10 ปอนด์)">
+            
+            <button class="btn-save" onclick="App.addDevice()">บันทึกจุดใหม่</button>
+            <button onclick="UI.closeModal('modalAdd')" style="width:100%; margin-top:10px; background:none; border:none; padding:10px; color:#666;">ยกเลิก</button>
         </div>
     </div>
 
@@ -265,7 +292,7 @@
 
     <script>
         // ============================================
-        // ⚠️ วางลิงก์ Google Apps Script หรือ Power Automate ตรงนี้ ⚠️
+        // ⚠️ วางลิงก์ Google Apps Script ตรงนี้ ⚠️
         // ============================================
         const CLOUD_URL = ""; 
 
@@ -374,7 +401,7 @@
             tempPhoto: null,
 
             init() {
-                const stored = localStorage.getItem('firePins_Ent_Complete');
+                const stored = localStorage.getItem('firePins_Pro_V6');
                 this.data = stored ? JSON.parse(stored) : DB_INIT.map(d => ({ ...d, history: {} }));
                 this.month = new Date().toISOString().slice(0, 7);
                 document.getElementById('monthPicker').value = this.month;
@@ -383,17 +410,20 @@
                 this.handleDeepLink();
             },
 
-            // ดึงข้อมูลจาก Cloud (Google Sheet)
+            // ดึงข้อมูลจาก Google Sheet
             syncCloud() {
                 if(!CLOUD_URL) return;
                 
                 // Show Loading (Optional: Add spinner)
+                const btn = document.querySelector('.fab-refresh i');
+                if(btn) btn.classList.add('fa-spin');
+
                 fetch(CLOUD_URL + "?action=read")
                 .then(res => res.json())
                 .then(data => {
                     this.cloudStatus = {};
                     data.forEach(row => {
-                        // เก็บข้อมูลเฉพาะของเดือนปัจจุบัน (ถ้าจะให้ดีควรกรองใน Sheet หรือส่ง parameter เดือนไป)
+                        // เก็บข้อมูลเฉพาะของเดือนปัจจุบัน
                         // เบื้องต้นใช้ timestamp เทียบเดือน
                         if(row.time.startsWith(new Date().getFullYear())) { 
                            this.cloudStatus[row.id] = { status: row.status, inspector: row.inspector, time: row.time };
@@ -401,7 +431,10 @@
                     });
                     this.render();
                 })
-                .catch(err => console.error("Sync Error:", err));
+                .catch(err => console.error("Sync Error:", err))
+                .finally(() => {
+                     if(btn) btn.classList.remove('fa-spin');
+                });
             },
 
             render() {
@@ -425,11 +458,11 @@
                     if (cloudInfo) {
                         status = cloudInfo.status.includes('ปกติ') ? 'pass' : 'fail';
                         inspectorName = cloudInfo.inspector;
-                        timeShow = cloudInfo.time.split(' ')[1];
+                        timeShow = cloudInfo.time.split(' ')[1] || '';
                     } else if (localInfo) {
                         status = localInfo.status;
                         inspectorName = localInfo.inspector;
-                        timeShow = localInfo.time.split(' ')[1];
+                        timeShow = localInfo.time.split(' ')[1] || '';
                     }
 
                     const isInspected = status !== 'pending';
@@ -460,9 +493,9 @@
                             <div class="card-info">
                                 <h3>${item.id} - ${item.loc}</h3>
                                 <p>${item.type} ${statusBadge}</p>
-                                ${isInspected ? `<span class="d-tag" style="background:#F5F5F5; color:#333; border:none; margin-top:5px;"><i class="fa-solid fa-user"></i> ${inspectorName}</span>` : ''}
+                                ${isInspected ? `<span class="inspector-badge"><i class="fa-solid fa-user"></i> ${inspectorName}</span>` : ''}
                             </div>
-                            <div class="status-icon"><i class="fa-solid ${isInspected ? (status==='pass'?'fa-circle-check':'fa-triangle-exclamation') : 'fa-circle'}"></i></div>
+                            <div class="status-icon"><i class="fa-solid ${status==='pass'?'fa-circle-check':(status==='fail'?'fa-triangle-exclamation':'fa-circle')}"></i></div>
                         `;
                         list.appendChild(div);
                     }
@@ -486,6 +519,32 @@
                 const tagsDiv = document.getElementById('defectTags');
                 tagsDiv.innerHTML = Object.entries(defectCounts)
                     .map(([k,v]) => `<span class="d-tag">${k} ${v}</span>`).join('');
+            },
+
+            // --- ADD NEW DEVICE ---
+            addDevice() {
+                const id = document.getElementById('addId').value.toUpperCase().trim();
+                const loc = document.getElementById('addLoc').value.trim();
+                const type = document.getElementById('addType').value.trim();
+                const size = document.getElementById('addSize').value.trim();
+
+                if(!id || !loc) return alert('กรุณากรอกรหัสและสถานที่');
+                if(this.data.find(d => d.id === id)) return alert('รหัสถังนี้มีอยู่แล้ว');
+
+                this.data.push({ id, loc, type, size, history: {} });
+                this.saveToStorage();
+                UI.closeModal('modalAdd');
+                this.render();
+                alert('เพิ่มจุดตรวจสำเร็จ!');
+            },
+
+            deleteItem() {
+                if(confirm(`ยืนยันลบจุดตรวจ ${this.currentId} ถาวร?`)) {
+                    this.data = this.data.filter(d => d.id !== this.currentId);
+                    this.saveToStorage();
+                    UI.closeModal('modalInspect');
+                    this.render();
+                }
             },
 
             openInspect(id) {
@@ -544,8 +603,11 @@
                 const isFail = checks.some(c => !c);
                 const photoSec = document.getElementById('photoSection');
                 
-                if(isFail) photoSec.style.display = 'block';
-                else if(!this.tempPhoto) photoSec.style.display = 'none';
+                if(isFail) {
+                    photoSec.style.display = 'block';
+                } else if(!this.tempPhoto) {
+                    photoSec.style.display = 'none';
+                }
             },
             
             updatePhotoUI() {
@@ -574,7 +636,7 @@
                 
                 const btn = document.getElementById('btnSave');
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังส่งข้อมูล...';
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
 
                 const checks = [];
                 for(let i=0; i<5; i++) checks.push(document.getElementById(`chk_${i}`).checked);
@@ -602,10 +664,10 @@
                 };
 
                 // 1. Save Local
-                item.history[this.month] = { ...payload, photo: this.tempPhoto };
+                item.history[this.month] = { ...payload, photo: this.tempPhoto, checks: checks };
                 this.saveToStorage();
 
-                // 2. Send to Cloud (Google Sheets or Power Automate)
+                // 2. Send to Cloud (if URL provided)
                 if(CLOUD_URL && CLOUD_URL.startsWith('http')) {
                     fetch(CLOUD_URL, {
                         method: 'POST',
@@ -613,7 +675,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     }).then(() => {
-                        alert("✅ บันทึกสำเร็จ! ข้อมูลถูกส่งเข้า Cloud แล้ว");
+                        alert("✅ บันทึกสำเร็จ! ข้อมูลถูกส่งไปที่ Cloud แล้ว");
                         UI.closeModal('modalInspect');
                         this.syncCloud(); // Update local view with cloud data
                     }).catch(err => {
@@ -650,7 +712,7 @@
             },
             
             exportExcel() {
-                let csv = `\uFEFFID,Location,Type,Size,Status,Inspector,Time,Note,Result\n`;
+                let csv = `\uFEFFID,Location,Type,Size,Status,Inspector,Timestamp,Note,Result\n`;
                 this.data.forEach(d => {
                     const h = d.history[this.month];
                     if(h) {
@@ -695,8 +757,8 @@
                 reader.readAsText(file);
             },
 
-            saveToStorage() { localStorage.setItem('firePins_Ent_Final', JSON.stringify(this.data)); },
-            clearData() { if(confirm('ยืนยันลบข้อมูลการตรวจทั้งหมด? (ข้อมูลถัง 90 ใบจะยังอยู่)')) { localStorage.removeItem('firePins_Ent_Final'); location.reload(); } },
+            saveToStorage() { localStorage.setItem('firePins_Pro_V6', JSON.stringify(this.data)); },
+            clearData() { if(confirm('ยืนยันลบข้อมูลการตรวจทั้งหมด? (ข้อมูลถัง 90 ใบจะยังอยู่)')) { localStorage.removeItem('firePins_Pro_V6'); location.reload(); } },
             
             handleDeepLink() {
                 const pid = new URLSearchParams(window.location.search).get('id');
