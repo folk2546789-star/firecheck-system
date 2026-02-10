@@ -13,17 +13,16 @@
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <style>
-        /* --- DESIGN SYSTEM (Microsoft Theme) --- */
+        /* --- DESIGN SYSTEM (Red Theme) --- */
         :root {
-            --primary: #D32F2F;         /* Safety Red */
+            --primary: #D32F2F;         
             --primary-dark: #B71C1C;
-            --secondary: #263238;      
-            --success: #2E7D32;         /* Green */
-            --warning: #F9A825;         /* Orange */
-            --bg-body: #F0F2F5;
+            --success: #2E7D32;         
+            --warning: #F9A825;         
+            --bg-body: #F3F2F1;
             --surface: #FFFFFF;
-            --text-main: #37474F;
-            --text-muted: #90A4AE;
+            --text-main: #201F1E;
+            --text-muted: #605E5C;
             --radius: 12px;
             --header-h: 64px;
         }
@@ -38,15 +37,11 @@
             overflow: hidden;
         }
 
-        /* --- HEADER --- */
+        /* HEADER */
         header { 
-            height: var(--header-h); 
-            background: var(--primary); 
-            color: white;               
-            padding: 0 16px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); 
-            z-index: 50; flex-shrink: 0; 
+            height: var(--header-h); background: var(--primary); color: white;
+            padding: 0 16px; display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); z-index: 50; flex-shrink: 0; 
         }
         .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.2rem; }
         .brand i { font-size: 1.4rem; color: rgba(255,255,255,0.9); }
@@ -59,7 +54,7 @@
         }
         .month-selector option { color: #333; }
 
-        /* --- DASHBOARD --- */
+        /* DASHBOARD */
         .dashboard { padding: 15px; background: var(--surface); border-bottom: 1px solid #ECEFF1; flex-shrink: 0; }
         .progress-card { background: #fff; border: 1px solid #E0E0E0; border-radius: var(--radius); padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .progress-bar { height: 10px; background: #ECEFF1; border-radius: 5px; overflow: hidden; margin: 10px 0; }
@@ -69,7 +64,7 @@
         .defect-tags { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 5px; }
         .d-tag { font-size: 0.75rem; background: #FFEBEE; color: var(--primary); padding: 4px 10px; border-radius: 12px; white-space: nowrap; border: 1px solid #FFCDD2; }
 
-        /* --- LIST & FILTER --- */
+        /* LIST & FILTER */
         .search-container { padding: 10px 15px 0 15px; flex-shrink: 0; }
         .input-box { width: 100%; padding: 10px 12px; border: 1px solid #8A8886; border-radius: var(--radius); font-family: 'Prompt'; font-size: 0.95rem; outline: none; background: white; }
         
@@ -78,9 +73,8 @@
             border: 1px solid #CFD8DC; padding: 6px 14px; border-radius: 20px; 
             font-size: 0.85rem; color: var(--text-main); background: white; 
             white-space: nowrap; cursor: pointer; transition: all 0.2s; font-weight: 500;
-            display: flex; align-items: center; gap: 6px;
         }
-        .chip.active { transform: scale(1.05); border-color: transparent; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
         #filter-all.active { background: var(--text-main); }     
         #filter-pending.active { background: var(--primary); }   
         #filter-fail.active { background: var(--warning); color: #333; }
@@ -102,14 +96,14 @@
         .card.pass .status-icon { color: var(--success); }
         .card.fail .status-icon { color: var(--primary); }
 
-        /* --- FAB --- */
+        /* FAB */
         .fab-wrapper { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 40; }
         .fab { width: 56px; height: 56px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.25); cursor: pointer; font-size: 1.2rem; transition: transform 0.2s; }
         .fab:active { transform: scale(0.95); }
         .fab-scan { background: var(--primary); width: 64px; height: 64px; font-size: 1.6rem; }
         .fab-excel { background: var(--success); }
 
-        /* --- MODALS --- */
+        /* MODALS */
         .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(2px); }
         .modal.show { display: flex; }
         .sheet { background: var(--surface); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90dvh; overflow-y: auto; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -124,7 +118,7 @@
         .switch { position: relative; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #CFD8DC; border-radius: 34px; transition: .3s; }
-        .slider:before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .slider:before { content: ""; position: absolute; height: 20px; width: 20px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: .3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input:checked + .slider { background: var(--success); }
         input:checked + .slider:before { transform: translateX(22px); }
 
@@ -142,7 +136,7 @@
         .photo-preview { max-width: 100%; max-height: 250px; border-radius: 8px; display: none; margin-top: 15px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         #qr-reader { width: 100%; border-radius: 16px; overflow: hidden; background: black; }
-
+        
         /* MENU */
         .menu-btn { width: 100%; padding: 15px; text-align: left; background: none; border: none; border-bottom: 1px solid #F0F0F0; font-family: 'Prompt'; font-size: 1rem; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 12px; }
         .menu-btn i { width: 24px; color: var(--text-muted); }
@@ -212,7 +206,7 @@
 
             <div style="margin-top:20px;" id="checklistForm"></div>
 
-            <!-- Photo Upload (Auto-show on Fail) -->
+            <!-- Photo Upload -->
             <div id="photoSection">
                 <div class="photo-area" onclick="document.getElementById('photoInput').click()">
                     <i class="fa-solid fa-camera fa-2x" style="color:var(--primary);"></i>
@@ -271,9 +265,9 @@
 
     <script>
         // ============================================
-        // ⚠️ วางลิงก์ Google Apps Script ตรงนี้ ⚠️
+        // ⚠️ วางลิงก์ Google Apps Script หรือ Power Automate ตรงนี้ ⚠️
         // ============================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbwvzhw-oxxqcEGXmJg_g3EzgRSdt2Q3Inc8gShd7zg0zYue1RxROL8rZFSY04BpgZvZbA/exec"; 
+        const CLOUD_URL = ""; 
 
         // --- DATASET: 90 POINTS (FULL) ---
         const DB_INIT = [
@@ -372,6 +366,7 @@
         // --- APP ENGINE ---
         const App = {
             data: [],
+            cloudStatus: {}, // เก็บสถานะจาก Cloud
             month: '',
             filterType: 'all',
             currentId: null,
@@ -379,12 +374,34 @@
             tempPhoto: null,
 
             init() {
-                const stored = localStorage.getItem('firePins_Ent_Final');
+                const stored = localStorage.getItem('firePins_Ent_Complete');
                 this.data = stored ? JSON.parse(stored) : DB_INIT.map(d => ({ ...d, history: {} }));
                 this.month = new Date().toISOString().slice(0, 7);
                 document.getElementById('monthPicker').value = this.month;
                 this.render();
+                this.syncCloud(); // ดึงข้อมูลทันทีเมื่อเปิดแอป
                 this.handleDeepLink();
+            },
+
+            // ดึงข้อมูลจาก Cloud (Google Sheet)
+            syncCloud() {
+                if(!CLOUD_URL) return;
+                
+                // Show Loading (Optional: Add spinner)
+                fetch(CLOUD_URL + "?action=read")
+                .then(res => res.json())
+                .then(data => {
+                    this.cloudStatus = {};
+                    data.forEach(row => {
+                        // เก็บข้อมูลเฉพาะของเดือนปัจจุบัน (ถ้าจะให้ดีควรกรองใน Sheet หรือส่ง parameter เดือนไป)
+                        // เบื้องต้นใช้ timestamp เทียบเดือน
+                        if(row.time.startsWith(new Date().getFullYear())) { 
+                           this.cloudStatus[row.id] = { status: row.status, inspector: row.inspector, time: row.time };
+                        }
+                    });
+                    this.render();
+                })
+                .catch(err => console.error("Sync Error:", err));
             },
 
             render() {
@@ -396,10 +413,27 @@
                 const defectCounts = {};
 
                 this.data.forEach(item => {
-                    const h = item.history[this.month];
-                    const status = h ? h.status : 'pending';
-                    const isInspected = status !== 'pending';
+                    // ใช้ข้อมูลจาก Cloud ถ้ามี, ถ้าไม่มีใช้ในเครื่อง
+                    const cloudInfo = this.cloudStatus[item.id];
+                    const localInfo = item.history[this.month];
                     
+                    // Priority: Cloud > Local
+                    let status = 'pending';
+                    let inspectorName = '';
+                    let timeShow = '';
+
+                    if (cloudInfo) {
+                        status = cloudInfo.status.includes('ปกติ') ? 'pass' : 'fail';
+                        inspectorName = cloudInfo.inspector;
+                        timeShow = cloudInfo.time.split(' ')[1];
+                    } else if (localInfo) {
+                        status = localInfo.status;
+                        inspectorName = localInfo.inspector;
+                        timeShow = localInfo.time.split(' ')[1];
+                    }
+
+                    const isInspected = status !== 'pending';
+
                     total++;
                     if(isInspected) done++;
                     if(status === 'fail') fail++;
@@ -412,18 +446,29 @@
                         const div = document.createElement('div');
                         div.className = `card ${status}`;
                         div.onclick = () => this.openInspect(item.id);
+                        
+                        let statusBadge = '';
+                        if(isInspected) {
+                            statusBadge = status==='pass' 
+                                ? `<span style="color:var(--success)">✅ ปกติ (${timeShow})</span>` 
+                                : `<span style="color:var(--warning)">⚠️ พบปัญหา (${timeShow})</span>`;
+                        } else {
+                            statusBadge = `<span style="color:#999">รอตรวจ</span>`;
+                        }
+
                         div.innerHTML = `
                             <div class="card-info">
                                 <h3>${item.id} - ${item.loc}</h3>
-                                <p>${item.type} (${item.size}) ${isInspected ? `<span style="color:${status==='pass'?'var(--success)':'var(--warning)'}; margin-left:8px; font-size:0.75rem;"><i class="fa-solid fa-clock"></i> ${h.time.split(' ')[1]}</span>` : ''}</p>
+                                <p>${item.type} ${statusBadge}</p>
+                                ${isInspected ? `<span class="d-tag" style="background:#F5F5F5; color:#333; border:none; margin-top:5px;"><i class="fa-solid fa-user"></i> ${inspectorName}</span>` : ''}
                             </div>
                             <div class="status-icon"><i class="fa-solid ${isInspected ? (status==='pass'?'fa-circle-check':'fa-triangle-exclamation') : 'fa-circle'}"></i></div>
                         `;
                         list.appendChild(div);
                     }
                     
-                    if(h && h.status === 'fail') {
-                         h.checks.forEach((c, i) => {
+                    if(localInfo && localInfo.status === 'fail') {
+                         localInfo.checks.forEach((c, i) => {
                             if(!c) {
                                 const labels = ["น้ำหนัก","สายฉีด","ตัวถัง","สลัก","ภาพรวม"];
                                 defectCounts[labels[i]] = (defectCounts[labels[i]] || 0) + 1;
@@ -499,11 +544,8 @@
                 const isFail = checks.some(c => !c);
                 const photoSec = document.getElementById('photoSection');
                 
-                if(isFail) {
-                    photoSec.style.display = 'block';
-                } else if(!this.tempPhoto) {
-                    photoSec.style.display = 'none';
-                }
+                if(isFail) photoSec.style.display = 'block';
+                else if(!this.tempPhoto) photoSec.style.display = 'none';
             },
             
             updatePhotoUI() {
@@ -549,31 +591,31 @@
                 const item = this.data.find(d => d.id === this.currentId);
                 const payload = {
                     id: this.currentId,
-                    location: item.loc,
+                    loc: item.loc,
                     type: item.type,
                     month: this.month,
                     status: status,
                     inspector: name,
                     note: document.getElementById('inspectNote').value,
-                    check_details: checks.map(c => c ? 'Pass' : 'Fail').join(", "),
-                    timestamp: new Date().toLocaleString('th-TH')
+                    checks: checks,
+                    time: new Date().toLocaleString('th-TH')
                 };
 
                 // 1. Save Local
-                item.history[this.month] = { ...payload, photo: this.tempPhoto, checks: checks };
+                item.history[this.month] = { ...payload, photo: this.tempPhoto };
                 this.saveToStorage();
 
-                // 2. Send to Google Sheets (if URL provided)
-                if(API_URL.startsWith('http')) {
-                    fetch(API_URL, {
+                // 2. Send to Cloud (Google Sheets or Power Automate)
+                if(CLOUD_URL && CLOUD_URL.startsWith('http')) {
+                    fetch(CLOUD_URL, {
                         method: 'POST',
                         mode: 'no-cors',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     }).then(() => {
-                        alert("✅ บันทึกสำเร็จ! ข้อมูลถูกส่งไปที่ Dashboard จป. แล้ว");
+                        alert("✅ บันทึกสำเร็จ! ข้อมูลถูกส่งเข้า Cloud แล้ว");
                         UI.closeModal('modalInspect');
-                        this.render();
+                        this.syncCloud(); // Update local view with cloud data
                     }).catch(err => {
                         alert("⚠️ บันทึกในเครื่องแล้ว (แต่ส่งออนไลน์ไม่ผ่าน เช็คเน็ต)");
                         UI.closeModal('modalInspect');
@@ -608,7 +650,7 @@
             },
             
             exportExcel() {
-                let csv = `\uFEFFID,Location,Type,Size,Status,Inspector,Timestamp,Note,Result\n`;
+                let csv = `\uFEFFID,Location,Type,Size,Status,Inspector,Time,Note,Result\n`;
                 this.data.forEach(d => {
                     const h = d.history[this.month];
                     if(h) {
